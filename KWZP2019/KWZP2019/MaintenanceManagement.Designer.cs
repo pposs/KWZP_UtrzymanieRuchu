@@ -127,6 +127,7 @@
             this.btnNewMaintenance.Text = "Nowe zlecenie";
             this.btnNewMaintenance.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnNewMaintenance.UseVisualStyleBackColor = false;
+            this.btnNewMaintenance.Click += new System.EventHandler(this.btnNewMaintenance_Click);
             // 
             // btnCalendar
             // 

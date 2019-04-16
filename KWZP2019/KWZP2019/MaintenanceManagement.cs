@@ -30,15 +30,22 @@ namespace KWZP2019
 
         private void BtnMachines_Click(object sender, EventArgs e)
         {
-            MachinesForm partsForm = new MachinesForm(db, startForm, this);
+            MachinesForm machinesForm = new MachinesForm(db, startForm, this);
             this.Hide();
-            partsForm.Show();
+            machinesForm.Show();
         }
 
         private void BtnReturnMain_Click(object sender, EventArgs e)
         {
             this.startForm.Show();
             this.Hide();
+        }
+
+        private void btnNewMaintenance_Click(object sender, EventArgs e)
+        {
+            NewMaintenanceForm newMaintenanceForm = new NewMaintenanceForm(db, startForm, this);
+            this.Hide();
+            newMaintenanceForm.Show();
         }
     }
 }
