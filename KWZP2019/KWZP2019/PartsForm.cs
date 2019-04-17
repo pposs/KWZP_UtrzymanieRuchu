@@ -22,22 +22,30 @@ namespace KWZP2019
             this.maintenanceManagementForm = maintenanceManagementForm;
             InitializeComponent();
         }
-
-        private void pictureMenu_Click(object sender, EventArgs e)
-        {
-            if (menuParts.Width == 57)
-            {
-                menuParts.Width = 250;
-            }
-
-            else
-                menuParts.Width = 57;
-        }
+        
 
         private void btnReturnMain_Click(object sender, EventArgs e)
         {
             this.maintenanceManagementForm.Show();
             this.Hide();
+        }
+
+        private void pictureMenu_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (menuParts.Width==57)
+            {
+                menuParts.Width = 250;
+            }
+
+            else
+            {
+                while (menuParts.Width > 57)
+                {
+                    menuParts.Width -= 1;
+                }
+            }
+
+            
         }
     }
 }

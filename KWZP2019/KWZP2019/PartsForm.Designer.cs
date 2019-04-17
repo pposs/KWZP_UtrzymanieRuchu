@@ -30,11 +30,15 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PartsForm));
             this.menuParts = new System.Windows.Forms.Panel();
+            this.btnDeletePart = new System.Windows.Forms.Button();
+            this.btnFindPart = new System.Windows.Forms.Button();
+            this.btnAddPart = new System.Windows.Forms.Button();
+            this.btnPartsList = new System.Windows.Forms.Button();
             this.textPartsMenu = new System.Windows.Forms.TextBox();
             this.pictureMenu = new System.Windows.Forms.PictureBox();
             this.panelParts = new System.Windows.Forms.Panel();
             this.btnReturnMain = new System.Windows.Forms.Button();
-            this.buttonNewPart = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.menuParts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureMenu)).BeginInit();
             this.panelParts.SuspendLayout();
@@ -43,7 +47,10 @@
             // menuParts
             // 
             this.menuParts.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(32)))), ((int)(((byte)(33)))));
-            this.menuParts.Controls.Add(this.buttonNewPart);
+            this.menuParts.Controls.Add(this.btnDeletePart);
+            this.menuParts.Controls.Add(this.btnFindPart);
+            this.menuParts.Controls.Add(this.btnAddPart);
+            this.menuParts.Controls.Add(this.btnPartsList);
             this.menuParts.Controls.Add(this.textPartsMenu);
             this.menuParts.Controls.Add(this.pictureMenu);
             this.menuParts.Dock = System.Windows.Forms.DockStyle.Left;
@@ -51,6 +58,74 @@
             this.menuParts.Name = "menuParts";
             this.menuParts.Size = new System.Drawing.Size(57, 681);
             this.menuParts.TabIndex = 0;
+            // 
+            // btnDeletePart
+            // 
+            this.btnDeletePart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(32)))), ((int)(((byte)(33)))));
+            this.btnDeletePart.FlatAppearance.BorderSize = 0;
+            this.btnDeletePart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkSlateGray;
+            this.btnDeletePart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeletePart.Font = new System.Drawing.Font("Century Gothic", 16F);
+            this.btnDeletePart.ForeColor = System.Drawing.Color.White;
+            this.btnDeletePart.Image = ((System.Drawing.Image)(resources.GetObject("btnDeletePart.Image")));
+            this.btnDeletePart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDeletePart.Location = new System.Drawing.Point(0, 236);
+            this.btnDeletePart.Name = "btnDeletePart";
+            this.btnDeletePart.Size = new System.Drawing.Size(250, 67);
+            this.btnDeletePart.TabIndex = 5;
+            this.btnDeletePart.Text = "        Usuń część";
+            this.btnDeletePart.UseVisualStyleBackColor = false;
+            // 
+            // btnFindPart
+            // 
+            this.btnFindPart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(32)))), ((int)(((byte)(33)))));
+            this.btnFindPart.FlatAppearance.BorderSize = 0;
+            this.btnFindPart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkSlateGray;
+            this.btnFindPart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFindPart.Font = new System.Drawing.Font("Century Gothic", 16F);
+            this.btnFindPart.ForeColor = System.Drawing.Color.White;
+            this.btnFindPart.Image = ((System.Drawing.Image)(resources.GetObject("btnFindPart.Image")));
+            this.btnFindPart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnFindPart.Location = new System.Drawing.Point(0, 309);
+            this.btnFindPart.Name = "btnFindPart";
+            this.btnFindPart.Size = new System.Drawing.Size(250, 67);
+            this.btnFindPart.TabIndex = 4;
+            this.btnFindPart.Text = "      Wyszukaj";
+            this.btnFindPart.UseVisualStyleBackColor = false;
+            // 
+            // btnAddPart
+            // 
+            this.btnAddPart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(32)))), ((int)(((byte)(33)))));
+            this.btnAddPart.FlatAppearance.BorderSize = 0;
+            this.btnAddPart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkSlateGray;
+            this.btnAddPart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddPart.Font = new System.Drawing.Font("Century Gothic", 16F);
+            this.btnAddPart.ForeColor = System.Drawing.Color.White;
+            this.btnAddPart.Image = ((System.Drawing.Image)(resources.GetObject("btnAddPart.Image")));
+            this.btnAddPart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAddPart.Location = new System.Drawing.Point(0, 163);
+            this.btnAddPart.Name = "btnAddPart";
+            this.btnAddPart.Size = new System.Drawing.Size(250, 67);
+            this.btnAddPart.TabIndex = 3;
+            this.btnAddPart.Text = "         Dodaj część";
+            this.btnAddPart.UseVisualStyleBackColor = false;
+            // 
+            // btnPartsList
+            // 
+            this.btnPartsList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(32)))), ((int)(((byte)(33)))));
+            this.btnPartsList.FlatAppearance.BorderSize = 0;
+            this.btnPartsList.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkSlateGray;
+            this.btnPartsList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPartsList.Font = new System.Drawing.Font("Century Gothic", 16F);
+            this.btnPartsList.ForeColor = System.Drawing.Color.White;
+            this.btnPartsList.Image = ((System.Drawing.Image)(resources.GetObject("btnPartsList.Image")));
+            this.btnPartsList.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPartsList.Location = new System.Drawing.Point(0, 90);
+            this.btnPartsList.Name = "btnPartsList";
+            this.btnPartsList.Size = new System.Drawing.Size(250, 67);
+            this.btnPartsList.TabIndex = 2;
+            this.btnPartsList.Text = "         Spis części";
+            this.btnPartsList.UseVisualStyleBackColor = false;
             // 
             // textPartsMenu
             // 
@@ -79,7 +154,7 @@
             this.pictureMenu.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureMenu.TabIndex = 2;
             this.pictureMenu.TabStop = false;
-            this.pictureMenu.Click += new System.EventHandler(this.pictureMenu_Click);
+            this.pictureMenu.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureMenu_MouseClick);
             // 
             // panelParts
             // 
@@ -111,23 +186,6 @@
             this.btnReturnMain.UseVisualStyleBackColor = false;
             this.btnReturnMain.Click += new System.EventHandler(this.btnReturnMain_Click);
             // 
-            // buttonNewPart
-            // 
-            this.buttonNewPart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(32)))), ((int)(((byte)(33)))));
-            this.buttonNewPart.FlatAppearance.BorderSize = 0;
-            this.buttonNewPart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkSlateGray;
-            this.buttonNewPart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonNewPart.Font = new System.Drawing.Font("Century Gothic", 16F);
-            this.buttonNewPart.ForeColor = System.Drawing.Color.White;
-            this.buttonNewPart.Image = ((System.Drawing.Image)(resources.GetObject("buttonNewPart.Image")));
-            this.buttonNewPart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonNewPart.Location = new System.Drawing.Point(0, 90);
-            this.buttonNewPart.Name = "buttonNewPart";
-            this.buttonNewPart.Size = new System.Drawing.Size(250, 67);
-            this.buttonNewPart.TabIndex = 2;
-            this.buttonNewPart.Text = "         Nowa Część";
-            this.buttonNewPart.UseVisualStyleBackColor = false;
-            // 
             // PartsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -158,6 +216,10 @@
         private System.Windows.Forms.Panel panelParts;
         private System.Windows.Forms.TextBox textPartsMenu;
         private System.Windows.Forms.Button btnReturnMain;
-        private System.Windows.Forms.Button buttonNewPart;
+        private System.Windows.Forms.Button btnPartsList;
+        private System.Windows.Forms.Button btnDeletePart;
+        private System.Windows.Forms.Button btnAddPart;
+        private System.Windows.Forms.Button btnFindPart;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
