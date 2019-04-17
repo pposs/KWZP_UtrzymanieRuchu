@@ -19,6 +19,7 @@ namespace KWZP2019
         public PartsForm(RoofingCompanyEntities db, StartForm startForm, MaintenanceManagement maintenanceManagementForm)
         {
             this.db = db;
+            this.startForm = startForm;
             this.maintenanceManagementForm = maintenanceManagementForm;
             InitializeComponent();
         }

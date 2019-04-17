@@ -23,5 +23,11 @@ namespace KWZP2019
             this.maintenanceManagementForm = maintenanceManagementForm;
             InitializeComponent();
         }
+
+        private void btnReturnMain_Click(object sender, EventArgs e)
+        {
+            this.maintenanceManagementForm.Show();
+            this.Hide();
+        }
     }
 }
