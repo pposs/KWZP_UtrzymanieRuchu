@@ -1,8 +1,9 @@
-﻿use master;
-
+﻿
+use master;
+go
 drop database RoofingCompany;
 create database RoofingCompany;
-
+go
 use RoofingCompany;
 
 create table Accident(
@@ -18,9 +19,14 @@ create table EntranceControl(
 	IdSfDetail int not null,
 	IdEmployee int not null,
 	ControlDate DateTime not null,
-	ControlStatus bit not null,
+	ControlStatus bit null,
 	Comments nvarchar(255),
-	Quantity int not null
+	Quantity int null,
+	RealThickness decimal(3, 2) not null,
+	RealWidth decimal(6, 2) not null,
+	RealWeight decimal(6,2) not null,
+	RealColor nvarchar(20) not null,
+	ChemicalComposition bit not null
 	);
 
 create table FEMAnalysis(
@@ -33,10 +39,17 @@ create table FEMAnalysis(
 create table OutControl(
 	IdProcess int primary key not null,
 	IdEmployee int not null,
-	ControlDate DateTime not null,
-	ControlStatus bit not null,
-	Comments nvarchar(255),
-	Quantity int not null
+	StartControlDate DateTime not null,
+    EndControlDate DateTime not null,
+    WidthAcceptableDeviation float not null,
+	LenghtAcceptableDeviation float not null
+    );
+
+create table OutputProductMeasurements(
+    IdMeasurement int primary key not null,
+    IdProcess int not null,
+    MeasuredLenght float not null,
+    MeasuredWidth float not null
 	);
 
 create table SafetyControl(
@@ -64,7 +77,8 @@ create table SemiFinished(
 	);
 
 create table TechnicalProductData(
-	IdProduct int primary key not null,
+	IdTechnicalProductData int primary key identity(1,1) not null,
+	IdProduct int,
 	Pattern image not null,
 	Width float not null,
 	WeightPerMeter float not null,
@@ -77,7 +91,8 @@ create table Product(
 	IdSemiFinished int not null,
 	ProductCode nvarchar(50),
 	IdTechnology int not null,
-	InputDate DateTime not null
+	InputDate DateTime not null,
+	InProduction bit
 	);
 
 --============/SALES DEPARTMENT/==============================
@@ -103,7 +118,7 @@ CREATE TABLE OrderCustomer
 	IdEmployee int NOT NULL,
 	OrderDate datetime NOT NULL,
 	Cost money NOT NULL,
-	Markup int NOT NULL);
+	Markup float NOT NULL);
 
 CREATE TABLE OrderDetail
 	(IdDetail int IDENTITY(1,1) PRIMARY KEY NOT NULL,
@@ -313,7 +328,7 @@ MaintenanceType varchar (50) not null
 create table MaintDescription (
 IdMaintDesc int primary key identity (1,1) not null,
 MaintDescName varchar (50) not null,
-MaintDescription varchar (50) null,
+MaintDescription varchar (250) not null,
 InspectionTimeInterval float (2) not null
 );
 
@@ -360,8 +375,8 @@ PESEL bigint,
 create table Position(
 IdPosition int not null Primary key identity(1,1),
 Workplace nvarchar(50) null,
-ValidityOfOshTraining tinyint null,
-VailidityOfMedicalExam tinyint null
+ValidityOfOshTraining int null,
+VailidityOfMedicalExam int null
 );
 
 create table Contract(
@@ -412,7 +427,7 @@ Create table Staff(
 IdStaff int primary key identity(1,1) not null,
 IdDeparment int foreign key references Department(IdDepartment),
 IdPosition int foreign key references Position(IdPosition),
-Number tinyint,
+Number int,
 DateFrom date
 );
 
@@ -499,6 +514,8 @@ alter table FEMAnalysis add constraint FkFEMAnalysisEmployee foreign key (IdEmpl
 alter table OutControl add constraint FkOutControlEmployee foreign key (IdEmployee) references Employee(IdEmployee);
 alter table OutControl add constraint FkOutControlProcess foreign key (IdProcess) references ProductionProces(IdProces);
 
+alter table OutputProductMeasurements add constraint FkOutputProductMeasurements foreign key (IdProcess) references OutControl(IdProcess);
+
 alter table SafetyControl add constraint FkInspectedEmployee foreign key (IdInspectedEmployee) references Employee(IdEmployee);
 
 alter table SafetyTraining add constraint FkTrainedEmployee foreign key (IdEmployee) references Employee(IdEmployee);
@@ -538,6 +555,8 @@ ALTER TABLE SfOrderDetail ADD CONSTRAINT FkSfOrderDetailSemiFinished FOREIGN KEY
 ALTER TABLE PlannedProduction ADD CONSTRAINT FkOrderDetail
 FOREIGN KEY (IdDetail) REFERENCES OrderDetail(IdDetail)
 
+ALTER TABLE PlannedProduction ADD CONSTRAINT FkMachine
+FOREIGN KEY (IdMachine) REFERENCES Maintenance(IdMaintenance)
 -- planned_prod_empl_det FOREING KEYS--------
 ALTER TABLE PlannedProductionEmployeeDetails ADD CONSTRAINT FKPlannedProductionEmployeeDetailsAllocation
 FOREIGN KEY (IdEmployee) REFERENCES Allocation(IdAllocation)
@@ -573,13 +592,6 @@ alter table Realization add constraint FK_MaintenanceRealization foreign key (Id
 /*alter table PartsOrder add constraint FK_SupplierPartsOrder foreign key (IdSupplier) references Supplier(IdSupplier);*/
 /*alter table EployeePlan add constraint FK_EmployeeEmployeePlan foreign key (IdEmployee) references Employee(IdEmployee);*/
 
-
-go
-create view EntranceControlView as
-select IdSfDetail, SfCode, Thickness, Width, SfWeight, Color, ChemicalComposition from SemiFinished
-Right Join SfOrderDetail
-on SemiFinished.IdSemiFinished = SfOrderDetail.IdSemiFinished
-
 go
 create view ViewDailySfDelivery as
 select SemiFinishedOrder.SfDeliveryDate as [Delivery], Supplier.SupplierName, [Material].SfCode, [Material].Quantity
@@ -597,35 +609,23 @@ on SemiFinishedOrder.IdSfOrder = [Material].IdSfOrder;
 
 go
 create view ViewOshTraining as
-select Employee.EmployeeName, Employee.EmployeeSurName, SafetyTraining.TrainingDate, [NeedPos].ValidityOfOshTraining, [NeedPos].DepartmentName
+select Employee.IdEmployee, Employee.EmployeeName, Employee.EmployeeSurname, Department.DepartmentName, Contract.EndDate, SafetyTraining.TrainingDate, Position.ValidityOfOshTraining
 from Employee
 join Contract
 on Employee.IdEmployee = Contract.IdEmployee
-join(
-select Department.DepartmentName, Staff.IdPosition, Position.ValidityOfOshTraining
-from Staff
-join Department
-on Staff.IdDeparment = Department.IdDepartment
-join Position
-on Staff.IdPosition = Position.IdPosition) as [NeedPos]
-on [NeedPos].IdPosition = Contract.IdPosition
 join SafetyTraining
-on Employee.IdEmployee = SafetyTraining.IdEmployee;
-
+on Employee.IdEmployee = SafetyTraining.IdEmployee
+join Position
+on Position.IdPosition = Contract.IdPosition
+join Allocation
+on Employee.IdEmployee = Allocation.IdEmployee
+join Department
+on Department.IdDepartment = Allocation.IdDepartment;
 
 
 /*====SALES DEPARTMENT===*/
 
-GO
-
-CREATE VIEW vCustomerWithOrder
-AS
-SELECT CustomerName, IdOrderCustomer, OrderDate, Cost, Markup    
-FROM Customer
-JOIN OrderCustomer
-ON Customer.IdCustomer = OrderCustomer.IdCustomer;
-GO
- 
+GO 
 CREATE VIEW vSupplierParts
 AS
 SELECT IdSupplier, Type, SupplierName, PhoneNumber, Email, City, ZipCode, Street, HouseNumber, ApartmentNumber, NIP, KRS, Description 
@@ -633,8 +633,8 @@ FROM Supplier
 JOIN SupplierType
 ON Supplier.IdSupplierType = SupplierType.IdSupplierType
 WHERE (Type = 'Części');
-GO
 
+GO
 CREATE VIEW vSupplierSemis
 AS
 SELECT IdSupplier, Type, SupplierName, PhoneNumber, Email, City, ZipCode, Street, HouseNumber, ApartmentNumber, NIP, KRS, Description 
@@ -642,27 +642,150 @@ FROM Supplier
 JOIN SupplierType
 ON Supplier.IdSupplierType = SupplierType.IdSupplierType
 WHERE (Type = 'Półfabrykaty');
-GO
 
+GO
 CREATE VIEW vOutsourcingWithType
 AS
 SELECT IdOutsourcing, OutsourcingType, CompanyName, PhoneNumber, Email, City, ZipCode, Street, HouseNumber, ApartmentNumber, NIP, KRS, Description 
 FROM Outsourcing
 JOIN OutsourcingType
 ON Outsourcing.IdOutsourcingType = OutsourcingType.IdOutsourcingType;
-GO
 
+GO
 CREATE VIEW vIndividualCustomer
 AS
 SELECT *
 FROM Customer
 WHERE Pesel !=0; 
-GO
 
+GO
 CREATE VIEW vCompany
 AS
 SELECT *
 FROM Customer
 WHERE NIP !=0 AND KRS !=0 ; 
+
+GO
+
+CREATE VIEW vTechnicalProductDataPerProcess
+AS
+SELECT E.IdProcess, B.ProductCode, B.IdProduct, F.Lenght, F.Width, A.Quantity
+FROM OrderDetail A, Product B, PlannedProduction C, ProductionProces D, OutControl E, TechnicalProductData F
+WHERE A.IdProduct = B.IdProduct and C.IdDetail = A.IdDetail and D.IdPlan = C.IdPlan and E.IdProcess = D.IdProces and F.IdProduct = B.IdProduct
+
+GO
+
+CREATE VIEW vDevotionsInMeasuremntsPerProcess
+AS
+SELECT B.IdMeasurement, A.IdProcess, A.Quantity as QuantityToBeProducted, ((A.Lenght - B.MeasuredLenght)/B.MeasuredLenght)*100 as LenghtDeviation, ((A.Width - B.MeasuredWidth)/B.MeasuredWidth)*100 as WidthDeviation, C.LenghtAcceptableDeviation, C.WidthAcceptableDeviation
+FROM vTechnicalProductDataPerProcess A, OutputProductMeasurements B, OutControl C
+WHERE A.IdProcess = B.IdProcess and  B.IdProcess = C.IdProcess
+
+GO
+
+CREATE VIEW vSuccesfullyProducedPerProcess
+AS
+SELECT IdProcess, COUNT(IdMeasurement) as SuccesfullProduced, QuantityToBeProducted
+FROM vDevotionsInMeasuremntsPerProcess
+WHERE ABS(LenghtDeviation)<= LenghtAcceptableDeviation And ABS(WidthDeviation)<= WidthAcceptableDeviation
+GROUP BY IdProcess, QuantityToBeProducted
+
+GO
+
+CREATE VIEW vSuccesfullyProcess
+AS
+SELECT IdProcess
+FROM vSuccesfullyProducedPerProcess
+WHERE SuccesfullProduced >= QuantityToBeProducted
+
+GO
+
+CREATE VIEW vUnfinishedProcess
+AS
+SELECT IdProces
+FROM ProductionProces, vSuccesfullyProcess
+WHERE IdProces != IdProcess
+
+GO
+
+CREATE VIEW vOutputMagazine
+AS
+SELECT A.ProductCode, B.EndControlDate, C.SuccesfullProduced
+FROM vTechnicalProductDataPerProcess A, OutControl B, vSuccesfullyProducedPerProcess C
+WHERE  A.IdProcess = B.IdProcess AND A.IdProcess = C.IdProcess
+
+GO
+
+CREATE VIEW vInputMagazine
+AS
+SELECT SfCode, Quantity, ControlDate 
+FROM EntranceControl, SemiFinished;
+
+GO
+
+CREATE VIEW vPredictedPriceForCustomer
+AS
+SELECT DISTINCT OrderDetail.IdOrderCustomer, Customer.CustomerName, OrderCustomer.OrderDate, OrderCustomer.Cost, OrderCustomer.Markup
+FROM OrderDetail
+JOIN OrderCustomer
+ON OrderCustomer.IdOrderCustomer = OrderDetail.IdOrderCustomer
+JOIN TechnicalProductData
+ON TechnicalProductData.IdProduct = OrderDetail.IdProduct
+JOIN Customer
+ON OrderCustomer.IdCustomer = Customer.IdCustomer;
+
+GO
+
+CREATE VIEW vOrderDetail 
+AS
+SELECT Customer.CustomerName, OrderCustomer.IdOrderCustomer, OrderDetail.Quantity, OrderDetail.IdDetail, Product.ProductCode
+FROM OrderCustomer
+JOIN Customer
+ON Customer.IdCustomer = OrderCustomer.IdCustomer
+JOIN OrderDetail
+ON OrderCustomer.IdOrderCustomer = OrderDetail.IdOrderCustomer
+JOIN Product
+ON OrderDetail.IdProduct = Product.IdProduct;
+GO
+/*====PRODUCTION===*/
+CREATE VIEW vUnhandledOrderDetails
+AS
+SELECT OrderDetail.IdDetail, OrderDetail.Quantity, Product.ProductCode
+FROM OrderDetail
+JOIN Product
+ON OrderDetail.IdProduct = Product.IdProduct
+WHERE NOT EXISTS (SELECT * FROM PlannedProduction WHERE PlannedProduction.IdDetail = OrderDetail.IdDetail )
+
+GO
+CREATE VIEW SafetyControlHistoryView 
+AS
+SELECT SafetyControl.IdInspection, SafetyControl.CompanyName, SafetyControl.IdSafetyEmployee, SafetyControl.SaftyControlDate, Employee.EmployeeName + Employee.EmployeeSurname as "InspectedEmpolyee", SafetyControl.SafetyControlDescription
+FROM SafetyControl
+JOIN Employee
+ON SafetyControl.IdInspectedEmployee = Employee.IdEmployee;
+GO
+
+--Views UR--
+
+CREATE VIEW vPartsView
+AS
+SELECT TOP 100 PERCENT Part.PartName as [Nazwa części], 
+PartType.partType as [Typ części], 
+Unit.UnitName as [Jednostka], 
+Part.QuantityWarehouse as [Stan magazynowy]
+FROM Unit INNER JOIN (PartType INNER JOIN Part ON PartType.IdPartType = Part.IdPartType) 
+ON Unit.IdUnit = Part.IdUnit
+ORDER BY Part.PartName;
+GO
+
+CREATE VIEW vMaintPartsView
+AS
+SELECT TOP 100 PERCENT Maintenance.MaintenanceNr as [Nr Obsługi], Maintenance.DateAcceptOrder as [Data przyjęcia], 
+Part.PartName as [Nazwa części], MaintPart.PartQuantity as [Ilość], Unit.UnitName as [Jednostka]
+FROM Unit INNER JOIN (Maintenance INNER JOIN (Part INNER JOIN MaintPart 
+ON Part.IdPart = MaintPart.IdPart) 
+ON Maintenance.IdMaintenance = MaintPart.IdMaintenance) 
+ON Unit.IdUnit = Part.IdUnit
+ORDER BY Maintenance.DateAcceptOrder DESC;
 GO
 
