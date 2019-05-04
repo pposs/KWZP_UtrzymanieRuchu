@@ -11,18 +11,18 @@ using System.Windows.Forms;
 namespace KWZP2019
 {
     public partial class NewMaintenanceForm : Form
-    {  
-       RoofingCompanyEntities db;
-       StartForm startForm;
-       MaintenanceManagement maintenanceManagementForm;
+    {
+        RoofingCompanyEntities db;
+        StartForm startForm;
+        MaintenanceManagement maintenanceManagementForm;
 
-       public NewMaintenanceForm(RoofingCompanyEntities db, StartForm startForm, MaintenanceManagement maintenanceManagementForm)
-       {  
-          this.db = db;
-          this.startForm = startForm;
-          this.maintenanceManagementForm = maintenanceManagementForm;
-          InitializeComponent();
-       }
+        public NewMaintenanceForm(RoofingCompanyEntities db, StartForm startForm, MaintenanceManagement maintenanceManagementForm)
+        {
+            this.db = db;
+            this.startForm = startForm;
+            this.maintenanceManagementForm = maintenanceManagementForm;
+            InitializeComponent();
+        }
 
         private void btnReturnMain_Click(object sender, EventArgs e)
         {

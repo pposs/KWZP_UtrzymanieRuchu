@@ -441,14 +441,11 @@ insert into MaintType values ('Awaria');
 insert into MaintType values ('Przegląd');
 insert into MaintType values ('Konserwacja');
 
-select * from MaintDescription
-
-insert into MaintDescription values ('Smarowanie łańcucha', '1. Sprawdzić napięcie łańcucha; 2.Sprawdzić stan zużycia zębów; 3. Posmarować łańcuch', 0.25);
-insert into MaintDescription values ('Wymiana łożysk', '1. oględziny zewnętrzne, próba obrabiarki na biegu luzem i pod obciążeniem oraz pomiary dokładności', 6);
-insert into MaintDescription values ('Regulacja luzu napinacza', '1. Mycie i czyszczenie powierzchni współpracujących, mechanizmów i napędów', 1);
-insert into MaintDescription values ('Pomiar zużycia kół zębatych', '1. regulacja sterowania obrabiarek i zespołów oraz części mających wpływ na dokładność geometryczną', 2);
-insert into MaintDescription values ('Wymiana pasa napędowego', '1. usunięcie luzów i regulacja wrzeciona', 0.25);
-
+insert into MaintDescription values ('Smarowanie łańcucha', null, 0.25);
+insert into MaintDescription values ('Wymiana łożysk', null, 6);
+insert into MaintDescription values ('Regulacja luzu napinacza', null, 1);
+insert into MaintDescription values ('Pomiar zużycia kół zębatych', null, 2);
+insert into MaintDescription values ('Wymiana pasa napędowego', null, 0.25);
 
 insert into PartType values ('Łożysko');
 insert into PartType values ('Pasek');
@@ -504,11 +501,11 @@ insert into Realization values (2, 3, '2019-03-11 09:14:09 AM', '2019-03-11 11:4
 insert into Realization values (2, 1, '2019-03-11 09:14:09 AM', '2019-03-11 11:45:13 AM');
 insert into Realization values (3, 2, '2019-03-12 08:36:59 AM', '2019-03-12 09:10:14 AM');
 
-insert into EmployeePlan values (1, 1, '2019-05-01 10:34:09 AM', '2019-05-01 02:25:53 PM');
-insert into EmployeePlan values (1, 2, '2019-05-01 10:34:09 AM', '2019-05-02 02:25:53 PM');
-insert into EmployeePlan values (2, 3, '2019-05-01 09:14:09 AM', '2019-05-02 11:45:13 AM');
-insert into EmployeePlan values (2, 1, '2019-05-02 09:14:09 AM', '2019-05-03 11:45:13 AM');
-insert into EmployeePlan values (3, 2, '2019-05-02 08:36:59 AM', '2019-05-03 09:10:14 AM');
+insert into EmployeePlan values (1, 1, '2019-03-08 10:34:09 AM', '2019-03-08 02:25:53 PM');
+insert into EmployeePlan values (1, 2, '2019-03-08 10:34:09 AM', '2019-03-08 02:25:53 PM');
+insert into EmployeePlan values (2, 3, '2019-03-11 09:14:09 AM', '2019-03-11 11:45:13 AM');
+insert into EmployeePlan values (2, 1, '2019-03-11 09:14:09 AM', '2019-03-11 11:45:13 AM');
+insert into EmployeePlan values (3, 2, '2019-03-12 08:36:59 AM', '2019-03-12 09:10:14 AM');
 
 
 --SD
@@ -628,7 +625,7 @@ insert into PlannedProductionEmployeeDetails (IdProces, IdEmployee, StartDate, E
 	(9,4, '2019-08-15', '2019-09-25'),
 	(10,1, '2019-08-15','2019-09-30');
 
- insert into ProductionProces(IdPlan, StartDate, EndDate)
+ insert into ProductionProcess(IdPlan, StartDate, EndDate)
  values  
 	(1, '2019-03-23','2019-04-23'),
 	(2, '2019-04-23','2019-05-23'),

@@ -21,24 +21,10 @@ namespace KWZP2019
             InitializeComponent();
         }
 
-        private void BtnParts_Click(object sender, EventArgs e)
+        private void btnReturnMain_Click(object sender, EventArgs e)
         {
-            PartsForm partsForm = new PartsForm(db, startForm, this);
-            this.Hide();
-            partsForm.Show();
-        }
-
-        private void BtnMachines_Click(object sender, EventArgs e)
-        {
-            MachinesForm machinesForm = new MachinesForm(db, startForm, this);
-            this.Hide();
-            machinesForm.Show();
-        }
-
-        private void BtnReturnMain_Click(object sender, EventArgs e)
-        {
-            this.startForm.Show();
-            this.Hide();
+                this.startForm.Show();
+                this.Hide();            
         }
 
         private void btnNewMaintenance_Click(object sender, EventArgs e)
@@ -46,6 +32,34 @@ namespace KWZP2019
             NewMaintenanceForm newMaintenanceForm = new NewMaintenanceForm(db, startForm, this);
             this.Hide();
             newMaintenanceForm.Show();
+        }
+
+        private void btnMachines_Click(object sender, EventArgs e)
+        {
+            MachinesForm machinesForm = new MachinesForm(db, startForm, this);
+            this.Hide();
+            machinesForm.Show();
+        }
+
+        private void btnParts_Click(object sender, EventArgs e)
+        {
+            PartsForm partsForm = new PartsForm(db, this);
+            this.Hide();
+            partsForm.Show();
+        }
+
+        private void btnCalendar_Click(object sender, EventArgs e)
+        {
+            MaintenanceCalendarForm maintenanceCalendarForm = new MaintenanceCalendarForm(db, startForm, this);
+            this.Hide();
+            maintenanceCalendarForm.Show();
+        }
+
+        private void btnEmployees_Click(object sender, EventArgs e)
+        {
+            MaintenanceEmployeeCalendarForm maintenanceEmployeeCalendarForm = new MaintenanceEmployeeCalendarForm(db, startForm, this);
+            this.Hide();
+            maintenanceEmployeeCalendarForm.Show();
         }
     }
 }
