@@ -78,7 +78,7 @@ create table SemiFinished(
 
 create table TechnicalProductData(
 	IdTechnicalProductData int primary key identity(1,1) not null,
-	IdProduct int not null,
+	IdProduct int,
 	Pattern image not null,
 	Width float not null,
 	WeightPerMeter float not null,
@@ -190,8 +190,8 @@ CREATE TABLE OutsourcingCommitment
 	(IdPlan INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	IdDetail INT NOT NULL,
 	IdMachine INT NOT NULL,
-	PlannedStartd DATETIME,
-	PlannedEndd DATETIME,
+	PlannedStartd DATE,
+	PlannedEndd DATE,
 	Inproduction BIT
 	);
 	
@@ -200,8 +200,8 @@ CREATE TABLE OutsourcingCommitment
 	(IdDetail INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	IdProces INT NOT NULL,
 	IdEmployee INT NOT NULL,
-	StartDate DATETIME,
-	EndDate DATETIME,
+	StartDate DATE,
+	EndDate DATE,
 	);
 
 -- technology table--
@@ -217,16 +217,16 @@ CREATE TABLE OutsourcingCommitment
 	IdFailure INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	IdProces INT NOT NULL,
 	Specification nvarchar(50) NOT NULL, --changed name from description (slq syntax word) to specification
-	FailureDate DATETIME NOT NULL
+	FailureDate DATE NOT NULL
 	);
 	
 	--Production_proces table--  
-	CREATE TABLE ProductionProcess
+	CREATE TABLE ProductionProcesses
 	(IdProces INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	--zmiana IdPlan z nvarchar na int
 	IdPlan INT NOT NULL,
-	StartDate DATETIME,
-	EndDate DATETIME,
+	StartDate DATE,
+	EndDate DATE,
 	);
 
 
@@ -512,7 +512,7 @@ alter table EntranceControl add constraint FKEnteranceControlEmployee foreign ke
 alter table FEMAnalysis add constraint FkFEMAnalysisEmployee foreign key (IdEmployee) references Employee(IdEmployee);
 
 alter table OutControl add constraint FkOutControlEmployee foreign key (IdEmployee) references Employee(IdEmployee);
-alter table OutControl add constraint FkOutControlProcess foreign key (IdProcess) references ProductionProcess(IdProces);
+alter table OutControl add constraint FkOutControlProcess foreign key (IdProcess) references ProductionProcesses(IdProces);
 
 alter table OutputProductMeasurements add constraint FkOutputProductMeasurements foreign key (IdProcess) references OutControl(IdProcess);
 
@@ -566,10 +566,10 @@ FOREIGN KEY (IdProces) REFERENCES PlannedProduction(IdPlan)
 
 -- Failures FOREIGN KEYS ------
 ALTER TABLE Failure ADD CONSTRAINT FKProductionProces
-FOREIGN KEY (IdProces) REFERENCES ProductionProcess(IdProces)
+FOREIGN KEY (IdProces) REFERENCES ProductionProcesses(IdProces)
 
 --Production_proces FOREING KEYS--------
-ALTER TABLE ProductionProcess ADD CONSTRAINT FKProductionProcesPlannedProduction
+ALTER TABLE ProductionProcesses ADD CONSTRAINT FKProductionProcesPlannedProduction
 FOREIGN KEY (IdPlan) REFERENCES PlannedProduction(IdPlan)
 
 --utrzymanie ruchu
@@ -670,7 +670,7 @@ GO
 CREATE VIEW vTechnicalProductDataPerProcess
 AS
 SELECT E.IdProcess, B.ProductCode, B.IdProduct, F.Lenght, F.Width, A.Quantity
-FROM OrderDetail A, Product B, PlannedProduction C, ProductionProcess D, OutControl E, TechnicalProductData F
+FROM OrderDetail A, Product B, PlannedProduction C, ProductionProcesses D, OutControl E, TechnicalProductData F
 WHERE A.IdProduct = B.IdProduct and C.IdDetail = A.IdDetail and D.IdPlan = C.IdPlan and E.IdProcess = D.IdProces and F.IdProduct = B.IdProduct
 
 GO
@@ -703,7 +703,7 @@ GO
 CREATE VIEW vUnfinishedProcess
 AS
 SELECT IdProces
-FROM ProductionProcess, vSuccesfullyProcess
+FROM ProductionProcesses, vSuccesfullyProcess
 WHERE IdProces != IdProcess
 
 GO
@@ -769,10 +769,12 @@ GO
 
 CREATE VIEW vPartsView
 AS
-SELECT Part.PartName as [Nazwa części], 
-PartType.partType as [Typ części], 
-Unit.UnitName as [Jednostka], 
-Part.QuantityWarehouse as [Stan magazynowy]
+SELECT TOP 100 PERCENT Part.PartName, 
+PartType.partType, 
+Part.Producer,
+Part.CatalogPartNr,
+Unit.UnitName, 
+Part.QuantityWarehouse
 FROM Unit INNER JOIN (PartType INNER JOIN Part ON PartType.IdPartType = Part.IdPartType) 
 ON Unit.IdUnit = Part.IdUnit
 ORDER BY Part.PartName;
@@ -780,8 +782,8 @@ GO
 
 CREATE VIEW vMaintPartsView
 AS
-SELECT Maintenance.MaintenanceNr as [Nr Obsługi], Maintenance.DateAcceptOrder as [Data przyjęcia], 
-Part.PartName as [Nazwa części], MaintPart.PartQuantity as [Ilość], Unit.UnitName as [Jednostka]
+SELECT TOP 100 PERCENT Maintenance.MaintenanceNr, Maintenance.DateAcceptOrder, 
+Part.PartName, MaintPart.PartQuantity, Unit.UnitName
 FROM Unit INNER JOIN (Maintenance INNER JOIN (Part INNER JOIN MaintPart 
 ON Part.IdPart = MaintPart.IdPart) 
 ON Maintenance.IdMaintenance = MaintPart.IdMaintenance) 
@@ -789,3 +791,9 @@ ON Unit.IdUnit = Part.IdUnit
 ORDER BY Maintenance.DateAcceptOrder DESC;
 GO
 
+CREATE VIEW vPartsRequestView
+AS
+SELECT Part.PartName, PartRequest.RequestDate, PartRequest.Quantity, PartRequest.StatusPart
+FROM PartRequest
+JOIN Part
+ON Part.IdPart = PartRequest.IdPart
