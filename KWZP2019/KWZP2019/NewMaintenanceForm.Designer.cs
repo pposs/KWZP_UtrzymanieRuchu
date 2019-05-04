@@ -45,11 +45,11 @@
             this.btnReturnMain.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.btnReturnMain.Image = ((System.Drawing.Image)(resources.GetObject("btnReturnMain.Image")));
             this.btnReturnMain.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnReturnMain.Location = new System.Drawing.Point(1277, 520);
+            this.btnReturnMain.Location = new System.Drawing.Point(950, 500);
             this.btnReturnMain.Margin = new System.Windows.Forms.Padding(0);
             this.btnReturnMain.Name = "btnReturnMain";
-            this.btnReturnMain.Size = new System.Drawing.Size(259, 188);
-            this.btnReturnMain.TabIndex = 4;
+            this.btnReturnMain.Size = new System.Drawing.Size(194, 153);
+            this.btnReturnMain.TabIndex = 5;
             this.btnReturnMain.Text = "Powrót ";
             this.btnReturnMain.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnReturnMain.UseVisualStyleBackColor = false;
@@ -57,13 +57,12 @@
             // 
             // NewMaintenanceForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::KWZP2019.Properties.Resources._53062472_302328053765523_8291849142804676608_n;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1579, 838);
+            this.ClientSize = new System.Drawing.Size(1184, 681);
             this.Controls.Add(this.btnReturnMain);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "NewMaintenanceForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dodawanie nowego zlecenia obsługi";
